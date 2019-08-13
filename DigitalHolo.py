@@ -11,6 +11,9 @@ from numpy.fft import fftshift, ifftn
 import matplotlib.pyplot as plt
 import cv2
 
+sys.setrecursionlimit(10000)
+#コンパイルするさいに必要？
+
 d=0
 distance=.25
 j=20
@@ -39,13 +42,6 @@ def flag_Hologram(event):
 
     C = fftshift(ifftn(KL*theHologram))
     theImage = np.log(abs(C))
-
-    """
-    sub_window = tk.Toplevel()
-    sub_window.title("Result")
-    sub_window.geometry("1280x720")
-    """
-
     display_Fourier(theImage,file_name)
 
 def flag_figure(event):
@@ -58,6 +54,7 @@ def load_file():
     #jpgはテスト用で使うと画像がリサイズされるので注意
     #PILを使って画像を取得
     image = Image.open(file_name)
+    print(image)
     print("load is done!")
     return file_name, image
 
@@ -68,10 +65,17 @@ def trimming(x,y):
     imagesq.save(newFile)
     return imagesq
 
-def display(x,y):
+def display(file,name):
     #画像を表示
-    photo = ImageTk.PhotoImage(y,master=x)
-    tk.Label(x, image = photo).pack()
+    sub_window = tk.Toplevel()
+    sub_window.title("Result")
+    sub_window.geometry("600x600")
+    image = Image.open(name)
+    image = image.resize((600,600))
+    photo = ImageTk.PhotoImage(image,master=sub_window)
+    label_1 = tk.Label(sub_window,image=photo)
+    label_1.image = photo
+    label_1.pack()
 
 def display_Fourier(data,name):
     """
@@ -85,6 +89,8 @@ def display_Fourier(data,name):
     newfile = name + "_dist=" + str(distance) + "_Holo.png"
     im.save(newfile)
     print("save is done!")
+    if(option_1.get()==True):
+        display(im,newfile)
 
 def display_Fourier_test(data,name):
     #画像出力のテスト用です、多分使わないと思う
@@ -96,7 +102,7 @@ def display_Fourier_test(data,name):
         name = name.replace(".bmp","a")
         name = name.rstrip("a")
         name = name + str(i)
-        newfile = name + "_Holo.png"
+        newfile = name + ".png"
         im.save(newfile)
 
 """
@@ -170,6 +176,13 @@ e_2.pack()
 e_2.focus_set()
 e_2.bind("<Return>", Figure)
 e_2.place(x=50,y=490)
+
+option_1 = tk.BooleanVar()
+option_1.set(True)
+
+Check_1 = tk.Checkbutton(text = "処理終了時に画像を表示", variable=option_1)
+Check_1.pack()
+Check_1.place(x=170,y=200)
 
 """
 #画像選択用ボタンを使用しないテスト用
