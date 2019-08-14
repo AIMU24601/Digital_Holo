@@ -54,7 +54,6 @@ def load_file():
     #jpgはテスト用で使うと画像がリサイズされるので注意
     #PILを使って画像を取得
     image = Image.open(file_name)
-    print(image)
     print("load is done!")
     return file_name, image
 
