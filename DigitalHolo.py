@@ -8,15 +8,15 @@ import tkinter.filedialog as fd
 from PIL import Image, ImageTk
 import numpy as np
 from numpy.fft import fftshift, ifftn
-import matplotlib.pyplot as plt
 import cv2
 
 d=0
 distance=.25
 j=20
-f=0
+f=0 #進捗表示の消去管理用　要改善
 
-def flag_image_pricessing(event):
+# ホログラムをトリミング、進捗表示の消去
+def flag_image_processing(event):
     if(f==1):
         lbl_6.destroy()
         lbl_7.destroy()
@@ -26,6 +26,7 @@ def flag_image_pricessing(event):
     global image_sq
     image_sq = trimming(image,file_name)
 
+# 再生像形成のための行列計算
 def flag_Reconstruct(event):
     global theImage
     theHologram = np.array(image_sq, np.float) #numpyで処理するためndarrayに変換する
@@ -49,6 +50,7 @@ def flag_Reconstruct(event):
 def flag_figure(event):
     display_Fourier_test(theImage,file_name)
 
+# ホログラムのフルパスを取得してホログラムをロード
 def load_file():
     global f, lbl_6
     #filepathをフルパスで取得
@@ -65,6 +67,7 @@ def load_file():
     f = 1
     return file_name, image
 
+# トリミング用関数
 def trimming(x,y):
     global lbl_7
     #画像をx軸で324~2268、y軸で0~1944までトリミングし保存
@@ -77,6 +80,7 @@ def trimming(x,y):
     lbl_7.place(x=530,y=110)
     return imagesq
 
+# 再生像形成後に画像を表示する用
 def display(name):
     #画像を表示
     result_window = tk.Toplevel()
@@ -89,6 +93,7 @@ def display(name):
     label_1.image = photo
     label_1.pack()
 
+#ホログラムを行列から画像に変換する
 def display_Fourier(data,name):
     global lbl_8
     """
@@ -154,7 +159,7 @@ lb.place(x=20,y=20)
 
 #画像選択開始用ボタン
 Button_1 = tk.Button(text=u"select Hologram")
-Button_1.bind("<Button-1>",flag_image_pricessing)
+Button_1.bind("<Button-1>",flag_image_processing)
 Button_1.pack()
 Button_1.place(x=50,y=50)
 
